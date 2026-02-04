@@ -9,6 +9,11 @@ import Stores from "./pages/Stores";
 import Media from "./pages/Media";
 import UpdateProfile from "./pages/UpdateProfile";
 import CreateProduct from "./pages/CreateProduct";
+import CreateBlog from "./pages/CreateBlog";
+import BlogPage from "./pages/BlogPage";
+import OrderHistory from "./pages/OrderHistory";
+import { AuthProvider } from "./context/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 import {
   createBrowserRouter,
@@ -17,18 +22,54 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-// Define routes
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
+    <Route
+      path="/"
+      element={
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      }
+    >
       <Route index element={<HomePage />} />
       <Route path="products" element={<ProductPage />} />
       <Route path="smart-cooking" element={<SmartCooking />} />
+      <Route path="blogs/:id" element={<BlogPage />} />
       <Route path="stores" element={<Stores />} />
       <Route path="media" element={<Media />} />
-      <Route path="update-profile" element={<UpdateProfile />} />
-      <Route path="/products/create" element={<CreateProduct />} />
-      {/* Add more routes here like smart-cooking, stores, media, etc. */}
+      <Route
+        path="update-profile"
+        element={
+          <ProtectedRoute>
+            <UpdateProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="orders"
+        element={
+          <ProtectedRoute>
+            <OrderHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="products/create"
+        element={
+          <ProtectedRoute adminOnly>
+            <CreateProduct />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="blogs/create"
+        element={
+          <ProtectedRoute adminOnly>
+            <CreateBlog />
+          </ProtectedRoute>
+        }
+      />
     </Route>
   )
 );

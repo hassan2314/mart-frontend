@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Cart = ({ cart, onRemove, onBuyNow }) => {
+const Cart = ({ cart, onRemove, onBuyNow, isPlacingOrder = false }) => {
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
@@ -18,9 +18,10 @@ const Cart = ({ cart, onRemove, onBuyNow }) => {
       <p className="text-lg font-semibold mt-4">Total: <span>${total.toFixed(2)}</span></p>
       <button
         onClick={onBuyNow}
-        className="w-full bg-green-600 text-white px-4 py-2 mt-4 rounded hover:bg-green-700"
+        disabled={isPlacingOrder}
+        className="w-full bg-green-600 text-white px-4 py-2 mt-4 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Buy Now
+        {isPlacingOrder ? "Placing order..." : "Buy Now"}
       </button>
     </div>
    

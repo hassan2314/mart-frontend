@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProductList from "../components/Products/ProductList";
 import Cart from "../components/Products/Cart";
+import { useAuth } from "../context/AuthContext";
 
 const ProductPage = () => {
+  const navigate = useNavigate();
+  const { currentUser, setShowLoginModal } = useAuth();
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // 1. Fetch products FIRST
   useEffect(() => {
@@ -77,11 +82,40 @@ const ProductPage = () => {
     });
   };
 
-  const buyNow = () => {
-    if (cart.length === 0) return alert("Your cart is empty!");
-    alert("Redirecting to checkout...");
-    setCart([]);
-    localStorage.removeItem("cart");
+  const buyNow = async () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    if (!currentUser) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    setIsPlacingOrder(true);
+    try {
+      const orderItems = cart.map((i) => ({
+        product: i._id,
+        quantity: i.qty,
+        price: i.price,
+      }));
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/orders/`,
+        { orderItems },
+        { withCredentials: true }
+      );
+      setCart([]);
+      localStorage.removeItem("cart");
+      alert("Order placed successfully!");
+      navigate("/orders");
+    } catch (err) {
+      console.error("Order failed:", err);
+      alert(
+        err.response?.data?.message || "Failed to place order. Please try again."
+      );
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   if (isLoading) {
@@ -96,7 +130,12 @@ const ProductPage = () => {
         </h1>
         <div className="flex flex-col lg:flex-row gap-6 px-4">
           <ProductList products={products} onAddToCart={addToCart} />
-          <Cart cart={cart} onRemove={removeFromCart} onBuyNow={buyNow} />
+          <Cart
+            cart={cart}
+            onRemove={removeFromCart}
+            onBuyNow={buyNow}
+            isPlacingOrder={isPlacingOrder}
+          />
         </div>
       </div>
     </div>

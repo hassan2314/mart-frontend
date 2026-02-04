@@ -43,7 +43,7 @@ const UpdateProfilePage = () => {
       } catch (err) {
         console.error("Failed to fetch user:", err);
         alert("Please login to access this page");
-        navigate("/login");
+        navigate("/");
       } finally {
         setLoading(false);
       }

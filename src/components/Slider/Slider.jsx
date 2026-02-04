@@ -64,11 +64,11 @@ const Slider = () => {
                   <div className="flex flex-col items-center">
                     <img
                       src={slide.image}
-                      alt={slide.title}
+                      alt={slide.name}
                       className="w-full h-48 md:h-56 object-contain rounded-lg "
                     />
                     <p className="mt-3 text-lg font-semibold text-red-600 text-center">
-                      {slide.title}
+                      {slide.name}
                     </p>
                   </div>
                 </Link>

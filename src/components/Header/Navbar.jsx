@@ -2,13 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {
+    currentUser,
+    setCurrentUser,
+    showLoginModal,
+    setShowLoginModal,
+  } = useAuth();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // mobile menu
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // user profile dropdown
-  const [isModalOpen, setIsModalOpen] = useState(false); // login/signup modal
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const [formType, setFormType] = useState("login");
@@ -27,33 +34,6 @@ const Navbar = () => {
     username: "",
     password: "",
   });
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/users/current-user`,
-          { withCredentials: true }
-        );
-
-        if (response.data?.data?.user) {
-          setCurrentUser(response.data.data.user);
-          localStorage.setItem("user", JSON.stringify(response.data.data.user));
-        }
-      } catch (error) {
-        console.error("Auth verification failed:", error);
-        // Clear any invalid auth state
-        localStorage.removeItem("user");
-        localStorage.removeItem("userId");
-        sessionStorage.removeItem("accessToken");
-        setCurrentUser(null);
-      }
-    };
-
-    // Always verify auth on mount
-    verifyAuth();
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -67,38 +47,19 @@ const Navbar = () => {
     };
   }, []);
 
-  // Add this function inside your Navbar component
-  const verifyAuth = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/users/current-user`,
-        { withCredentials: true }
-      );
-
-      if (response.data?.user) {
-        setCurrentUser(response.data.user);
-        localStorage.setItem("userId", response.data.user._id);
-      }
-    } catch (error) {
-      console.error("Auth verification failed:", error);
-      // Clear any invalid auth state
-      localStorage.removeItem("userId");
-      sessionStorage.removeItem("accessToken");
-      setCurrentUser(null);
-    }
-  };
-
-  // Update your useEffect to call verifyAuth on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem("userId");
-    if (storedUser) {
-      verifyAuth();
-    }
-  }, []);
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+    setShowLoginModal(false);
+  };
+
+  useEffect(() => {
+    if (showLoginModal) {
+      setIsModalOpen(true);
+      setShowLoginModal(false);
+    }
+  }, [showLoginModal, setShowLoginModal]);
   const showForm = (type) => setFormType(type);
 
   const togglePassword = (id) => {
@@ -233,6 +194,31 @@ const Navbar = () => {
                     >
                       Update Profile
                     </Link>
+                    <Link
+                      to="/orders"
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Order History
+                    </Link>
+                    {currentUser?.role === "admin" && (
+                      <>
+                        <Link
+                          to="/products/create"
+                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Create Product
+                        </Link>
+                        <Link
+                          to="/blogs/create"
+                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Create Blog
+                        </Link>
+                      </>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
@@ -243,7 +229,11 @@ const Navbar = () => {
                 )}
               </>
             ) : (
-              <button onClick={toggleModal} className="text-2xl text-red-600">
+              <button
+                onClick={toggleModal}
+                className="text-2xl text-red-600"
+                aria-label="Login"
+              >
                 <FaUserCircle />
               </button>
             )}

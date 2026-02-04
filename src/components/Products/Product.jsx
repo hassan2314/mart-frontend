@@ -45,8 +45,8 @@ const Product = () => {
         ] */}
         {slides.map((item, idx) => (
           <div key={idx} className="text-center cursor-pointer hover:scale-105 transition-transform">
-            <img src={item.image} alt={item.title} className="mx-auto w-40 md:w-48" />
-            <p className="mt-2 text-lg font-semibold text-red-600">{item.title}</p>
+            <img src={item.image} alt={item.name} className="mx-auto w-40 md:w-48" />
+            <p className="mt-2 text-lg font-semibold text-red-600">{item.name}</p>
           </div>
         ))}
       </div>
