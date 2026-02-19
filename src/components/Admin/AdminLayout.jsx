@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard,
   Package,
@@ -8,6 +10,7 @@ import {
   UserPlus,
   ChevronLeft,
   ChevronRight,
+  LogOut,
 } from 'lucide-react';
 
 const SIDEBAR_STORAGE_KEY = 'admin-sidebar-collapsed';
@@ -21,6 +24,8 @@ const navItems = [
 ];
 
 const AdminLayout = () => {
+  const { setCurrentUser } = useAuth();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem(SIDEBAR_STORAGE_KEY) ?? 'false');
@@ -40,6 +45,22 @@ const AdminLayout = () => {
   const pageTitle = () => {
     const path = location.pathname.replace('/admin', '').replace('/', '') || 'dashboard';
     return path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/logout`, null, {
+        withCredentials: true,
+      });
+      localStorage.removeItem('user');
+      localStorage.removeItem('userId');
+      sessionStorage.removeItem('accessToken');
+      setCurrentUser(null);
+      navigate('/');
+    } catch (err) {
+      console.error('Logout Error:', err);
+      alert('Error logging out. Try again.');
+    }
   };
 
   return (
@@ -88,6 +109,17 @@ const AdminLayout = () => {
             </NavLink>
           ))}
         </nav>
+
+        <div className="p-3 border-t border-slate-700/50">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-red-500/20 hover:text-red-300 transition-colors"
+            title={sidebarCollapsed ? 'Logout' : undefined}
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {!sidebarCollapsed && <span className="truncate">Logout</span>}
+          </button>
+        </div>
       </aside>
 
       {/* Main content area */}
