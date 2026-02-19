@@ -83,6 +83,8 @@ const Navbar = () => {
         loginData,
         { withCredentials: true }
       );
+
+      console.log(res.data);
   
       const { user } = res.data.data;
       setCurrentUser(user);
@@ -90,6 +92,13 @@ const Navbar = () => {
       localStorage.setItem("userId", user._id);
       setIsModalOpen(false);
       setLoginData({ username: "", password: "" });
+
+      // Redirect based on user role
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Login Error:", err);
       alert("Login failed! Please check credentials.");
@@ -178,11 +187,24 @@ const Navbar = () => {
             {currentUser ? (
               <>
                 <button onClick={toggleDropdown} className="flex items-center">
-                  <img
-                    src={currentUser.avatar}
-                    alt="User"
-                    className="w-8 h-8 rounded-full border-2 border-red-500"
-                  />
+                  <span className="relative inline-flex w-8 h-8 items-center justify-center shrink-0">
+                    {currentUser.avatar ? (
+                      <img
+                        src={currentUser.avatar}
+                        alt="User"
+                        className="w-8 h-8 rounded-full border-2 border-red-500 object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.style.display = 'none';
+                          const fallback = e.target.nextElementSibling;
+                          if (fallback) fallback.classList.remove('hidden');
+                        }}
+                      />
+                    ) : null}
+                    <FaUserCircle
+                      className={`w-8 h-8 text-red-500 ${currentUser.avatar ? 'hidden' : ''}`}
+                    />
+                  </span>
                 </button>
 
                 {isDropdownOpen && (
@@ -267,11 +289,24 @@ const Navbar = () => {
           <li>
             {currentUser ? (
               <div className="flex flex-col items-center space-y-2">
-                <img
-                  src={currentUser.avatar}
-                  alt="User"
-                  className="w-8 h-8 rounded-full"
-                />
+                <span className="relative inline-flex w-8 h-8 items-center justify-center">
+                  {currentUser.avatar ? (
+                    <img
+                      src={currentUser.avatar}
+                      alt="User"
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.style.display = 'none';
+                        const fallback = e.target.nextElementSibling;
+                        if (fallback) fallback.classList.remove('hidden');
+                      }}
+                    />
+                  ) : null}
+                  <FaUserCircle
+                    className={`w-8 h-8 text-red-500 ${currentUser.avatar ? 'hidden' : ''}`}
+                  />
+                </span>
                 <button
                   onClick={() => {
                     toggleMenu();

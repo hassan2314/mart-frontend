@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
@@ -14,6 +14,14 @@ import BlogPage from "./pages/BlogPage";
 import OrderHistory from "./pages/OrderHistory";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
+// Admin Components (lazy loaded)
+const AdminLayout = React.lazy(() => import("./components/Admin/AdminLayout.jsx"));
+const AdminDashboard = React.lazy(() => import("./components/Admin/AdminDashboard.jsx"));
+const AdminProducts = React.lazy(() => import("./components/Admin/AdminProducts.jsx"));
+const AdminBlogs = React.lazy(() => import("./components/Admin/AdminBlogs.jsx"));
+const AdminUsers = React.lazy(() => import("./components/Admin/AdminUsers.jsx"));
+const InviteManager = React.lazy(() => import("./components/Admin/InviteManager.jsx"));
 
 import {
   createBrowserRouter,
@@ -70,6 +78,23 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
+
+      {/* Admin Routes */}
+      <Route path="/admin" element={
+        <ProtectedRoute adminOnly>
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-slate-50">Loading...</div>}>
+            <AdminLayout />
+          </Suspense>
+        </ProtectedRoute>
+      }>
+        <Route index element={<AdminDashboard />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="products" element={<AdminProducts />} />
+        <Route path="blogs" element={<AdminBlogs />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="invite-manager" element={<InviteManager />} />
+      </Route>
+
     </Route>
   )
 );

@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
   const refreshAuth = async () => {
     try {
@@ -30,20 +31,25 @@ export const AuthProvider = ({ children }) => {
     return null;
   };
 
+  const value = {
+    currentUser,
+    setCurrentUser,
+    refreshAuth,
+    showLoginModal,
+    setShowLoginModal,
+    authLoading,
+  };
+
   useEffect(() => {
-    refreshAuth();
+    const initAuth = async () => {
+      await refreshAuth();
+      setAuthLoading(false);
+    };
+    initAuth();
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{
-        currentUser,
-        setCurrentUser,
-        refreshAuth,
-        showLoginModal,
-        setShowLoginModal,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
