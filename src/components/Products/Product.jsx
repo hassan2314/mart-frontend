@@ -1,32 +1,7 @@
-import axios from 'axios';
-import React,  { useEffect, useState } from 'react';
+import React from 'react';
 
-const Product = () => {
-    //  const slides =
-    // [
-    //     { image: "/bakistry.png", title: "Whole Chicken, Designer Cuts" },
-    //     { image: "/breadedselection.png", title: "Breaded Selection" },
-    //     { image: "/deline.png", title: "Kabab Temptations" },
-    //     { image: "/kababtemptations.png", title: "Deline" },
-    //     { image: "/premiumchicken.png", title: "Topping & Fillingz" },
-    //     { image: "/samosa.png", title: "Signature Samosas and Spring Roll" },
-    //     { image: "/stok.png", title: "Bakistry" },
-    //     { image: "/tnf.png", title: "Stok" },
-    //   ];
-    const [slides, setSlides] = useState([]);
-
-    useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/`);
-          setSlides(res.data.data); // Assuming API response structure is { success, message, data }
-        } catch (error) {
-          console.error("Error fetching products:", error);
-        }
-      };
-  
-      fetchProducts();
-    }, []);
+const Product = ({ products = [] }) => {
+  const slides = products;
   return (
   
     <div className="py-16 bg-gray-100">
@@ -44,14 +19,14 @@ const Product = () => {
           { src: "./tnf.png", title: "Stok" },
         ] */}
         {slides.map((item, idx) => (
-          <div key={idx} className="text-center cursor-pointer hover:scale-105 transition-transform">
-            <img src={item.image} alt={item.name} className="mx-auto w-40 md:w-48" />
+          <div key={item._id || idx} className="text-center cursor-pointer hover:scale-105 transition-transform">
+            <img src={item.image} alt={item.name} className="mx-auto w-40 md:w-48" loading="lazy" />
             <p className="mt-2 text-lg font-semibold text-red-600">{item.name}</p>
           </div>
         ))}
       </div>
       <div className="text-center mt-8">
-            <a href="./products" class="text-red-600 font-bold text-lg">See more{' >'}</a>
+            <a href="/products" className="text-red-600 font-bold text-lg hover:underline">See more &gt;</a>
         </div>
     </div>
       

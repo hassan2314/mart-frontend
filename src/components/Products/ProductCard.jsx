@@ -22,6 +22,7 @@ const ProductCard = ({ product, onAdd, onQtyChange }) => {
         src={product.image}
         alt={product.name}
         className="w-20 h-20 object-cover rounded mx-auto sm:mx-0"
+        loading="lazy"
       />
 
       {/* Product Info */}

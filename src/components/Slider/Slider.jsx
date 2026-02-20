@@ -1,23 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
-const Slider = () => {
-  const [slides, setSlides] = useState([]);
+const Slider = ({ products = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/`);
-        setSlides(res.data.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+  const slides = products;
 
   // Auto-slide effect
   useEffect(() => {

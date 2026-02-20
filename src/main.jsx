@@ -3,17 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import HomePage from "./pages/HomePage.jsx";
-import ProductPage from "./pages/ProductPage.jsx";
-import SmartCooking from "./pages/SmartCooking";
-import Stores from "./pages/Stores";
-import Media from "./pages/Media";
-import UpdateProfile from "./pages/UpdateProfile";
-import CreateProduct from "./pages/CreateProduct";
-import CreateBlog from "./pages/CreateBlog";
-import BlogPage from "./pages/BlogPage";
-import OrderHistory from "./pages/OrderHistory";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
+// Lazy load public routes for smaller initial bundle
+const ProductPage = React.lazy(() => import("./pages/ProductPage.jsx"));
+const SmartCooking = React.lazy(() => import("./pages/SmartCooking"));
+const BlogPage = React.lazy(() => import("./pages/BlogPage"));
+const Stores = React.lazy(() => import("./pages/Stores"));
+const Media = React.lazy(() => import("./pages/Media"));
+const UpdateProfile = React.lazy(() => import("./pages/UpdateProfile"));
+const OrderHistory = React.lazy(() => import("./pages/OrderHistory"));
+const CreateProduct = React.lazy(() => import("./pages/CreateProduct"));
+const CreateBlog = React.lazy(() => import("./pages/CreateBlog"));
 
 // Admin Components (lazy loaded)
 const AdminLayout = React.lazy(() => import("./components/Admin/AdminLayout.jsx"));

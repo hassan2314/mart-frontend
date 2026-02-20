@@ -83,6 +83,7 @@ const SmartCooking = () => {
                         src={blog.image}
                         alt={blog.title}
                         className="w-16 h-16 object-cover rounded"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
