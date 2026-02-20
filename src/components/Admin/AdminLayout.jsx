@@ -8,6 +8,7 @@ import {
   FileText,
   Users,
   UserPlus,
+  ShoppingCart,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -18,6 +19,7 @@ const SIDEBAR_STORAGE_KEY = 'admin-sidebar-collapsed';
 const navItems = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/admin/products', icon: Package, label: 'Products' },
+  { to: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
   { to: '/admin/blogs', icon: FileText, label: 'Blogs' },
   { to: '/admin/users', icon: Users, label: 'Users' },
   { to: '/admin/invite-manager', icon: UserPlus, label: 'Invite Manager' },
