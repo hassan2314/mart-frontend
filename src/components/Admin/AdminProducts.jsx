@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { polishProductDescription, withPolishedCatalog } from '../../utils/productCopy';
 
 const AdminProducts = () => {
   const { currentUser } = useAuth();
@@ -40,7 +41,7 @@ const AdminProducts = () => {
         `${import.meta.env.VITE_API_URL}/products`,
         { withCredentials: true }
       );
-      setProducts(response.data.data);
+      setProducts(withPolishedCatalog(response.data.data));
     } catch (err) {
       console.error('Error fetching products:', err);
       setError(err.response?.data?.message || 'Failed to fetch products.');
@@ -95,7 +96,7 @@ const AdminProducts = () => {
     setCurrentProduct(product);
     setEditProductData({
       name: product.name,
-      description: product.description,
+      description: polishProductDescription(product.name, product.description),
       price: product.price,
       quantity: product.quantity,
       image: null, // No new image selected initially
@@ -226,6 +227,7 @@ const AdminProducts = () => {
                 <tr className="bg-slate-50">
                   <th className="py-3 px-4 text-left text-sm font-medium text-slate-600">Image</th>
                   <th className="py-3 px-4 text-left text-sm font-medium text-slate-600">Name</th>
+                  <th className="py-3 px-4 text-left text-sm font-medium text-slate-600">Description</th>
                   <th className="py-3 px-4 text-left text-sm font-medium text-slate-600">Price</th>
                   <th className="py-3 px-4 text-left text-sm font-medium text-slate-600">Quantity</th>
                   <th className="py-3 px-4 text-left text-sm font-medium text-slate-600">Actions</th>
@@ -240,6 +242,9 @@ const AdminProducts = () => {
                       )}
                     </td>
                     <td className="py-3 px-4 font-medium text-slate-800">{product.name}</td>
+                    <td className="py-3 px-4 text-slate-600 text-sm max-w-xs">
+                      <p className="line-clamp-2">{product.description}</p>
+                    </td>
                     <td className="py-3 px-4 text-slate-600">${product.price}</td>
                     <td className="py-3 px-4 text-slate-600">{product.quantity}</td>
                     <td className="py-3 px-4">

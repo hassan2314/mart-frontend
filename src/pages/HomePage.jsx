@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Slider from "../components/Slider/Slider";
 import Product from "../components/Products/Product";
+import { withPolishedCatalog } from "../utils/productCopy";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -10,7 +11,7 @@ const HomePage = () => {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/`);
-        setProducts(res.data.data || []);
+        setProducts(withPolishedCatalog(res.data.data));
       } catch (error) {
         console.error("Error fetching products:", error);
       }

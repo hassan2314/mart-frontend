@@ -1,0 +1,6 @@
+# SPA fallback: client routes such as /products and /admin must serve
+# index.html with a 200 so a refresh does not 404. Existing files win first.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
