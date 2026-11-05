@@ -4,6 +4,7 @@ import axios from "axios";
 import ProductList from "../components/Products/ProductList";
 import Cart from "../components/Products/Cart";
 import { useAuth } from "../context/AuthContext";
+import { withPolishedCatalog } from "../utils/productCopy";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const ProductPage = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/`);
-        const fetchedProducts = res.data.data;
+        const fetchedProducts = withPolishedCatalog(res.data.data);
         setProducts(fetchedProducts);
         
         // 2. AFTER products are set, restore cart

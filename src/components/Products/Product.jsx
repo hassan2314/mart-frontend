@@ -22,6 +22,9 @@ const Product = ({ products = [] }) => {
           <div key={item._id || idx} className="text-center cursor-pointer hover:scale-105 transition-transform">
             <img src={item.image} alt={item.name} className="mx-auto w-40 md:w-48" loading="lazy" />
             <p className="mt-2 text-lg font-semibold text-red-600">{item.name}</p>
+            {item.description ? (
+              <p className="mt-1 text-sm text-gray-600 line-clamp-3 px-3">{item.description}</p>
+            ) : null}
           </div>
         ))}
       </div>

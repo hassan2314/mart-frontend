@@ -28,7 +28,10 @@ const ProductCard = ({ product, onAdd, onQtyChange }) => {
       {/* Product Info */}
       <div className="flex-1 sm:ml-4 text-center sm:text-left">
         <h3 className="text-lg sm:text-xl font-semibold">{product.name}</h3>
-        <p className="text-red-500 font-bold">${product.price.toFixed(2)}</p>
+        {product.description ? (
+          <p className="text-sm text-gray-600 mt-1 line-clamp-3">{product.description}</p>
+        ) : null}
+        <p className="text-red-500 font-bold mt-1">${Number(product.price).toFixed(2)}</p>
       </div>
 
       {/* Quantity Controls */}
